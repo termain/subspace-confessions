@@ -1,4 +1,11 @@
-import curses
+import argparse
+import shlex
+
+try:
+    import curses
+except ImportError:
+    pass
+
 
 class CommandLineOptions:
     """Class to read in the command line options and store them. Parses
@@ -43,4 +50,3 @@ def _test_suite( ):
 def main():
     """The main function"""
     cmd_line_options = CommandLineOptions()
-    curses.wrapper( curses_main, cmd_line_options )
