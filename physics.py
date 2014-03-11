@@ -6,19 +6,47 @@ class GlobalConstants:
     tick_lengths = 10 #10 second ticks
     dimensions = 2
     norm = 1
-    phi = (2236,1000) #numerator, denominator tuple for phi for integer gss
+    phi = (1618034,1000000) #numerator, denominator tuple for phi for integer gss
 
 global global_constants
 global_constants = GlobalConstants()
 
-def golden_section_search( function, lower_bound, upper_bound ):
+"""
+def golden_section_search( function, lower_bound, upper_bound, tol=2 ):
     phi = global_constants.phi
-
+    c0 = phi[0]-phi[1] #numerator of phi minus one over phi's denominator
     ff=function
-    x1 = lower_bound
-    x3 = upper_bound
+
+    x_lb = lower_bound
+    x_ub = upper_bound
+    f_lb = ff(x_lb)
+    f_ub = ff(x_ub)
+
+    x_lt = ((x_ub-x_lb)*c0)//phi[1]+x_lb#lower test point
+    f_lt = ff(x_lt)
+    if f_lt > max( f_lb, f_ub ):
+        if f_lb > f_ub:
+            return x_ub
+        else:
+            return x_lb
+
+
+    while x3-x1>=tol:
+        delta = x3-x1
     
-    a = 
+        aa = (delta*c0)//phi[1]
+        bb = (x2*phi[0])//phi[1]
+
+        x2 = aa+x1
+        x4 = x3-bb
+
+        f2 = ff(aa)
+        f4 = ff(bb)
+
+        if f4>
+"""
+
+        
 
 
 
@@ -88,9 +116,17 @@ class MassiveObject:
     def __init__(self):
         self.mass = 1
         self.size = 1
+        self.heat_capacity = 1
+        self.toughness = 1
+        self.max_temp = 1
+        self.heat = 1
         self.position = new_vector( global_constants.dimensions )
         self.velocity = new_vector( global_constants.dimensions )
         self.acceleration = new_vector( global_constants.dimensions )
+
+
+    def sum_forces( self, *list_of_force_vectors):
+        pass
 
     def set_acceleration( self, force_vector ):
         self.acceleration = force_vector.divide( self.mass  )
@@ -103,6 +139,7 @@ class MassiveObject:
         """Minimum distance between self and other across the previous tick,
         so we check for collisions after advancing"""
         #determine times at which potential minima occur
+        raise NotImplemented
 
         a1 = self.acceleration
         a2 = other.acceleration
@@ -110,12 +147,27 @@ class MassiveObject:
         v1 = self.velocity
         v2 = other.velocity
 
-
         #if the relative accelerations are nonzero
-            
-            
         
         #keep negative time solutions since we're looking backwards
+
+    def collision_check( self, other ):
+        """Return true if self and other collide"""
+        pass
+
+    def collide( self, other ):
+        """Affect self and other according to collision rules"""
+        pass
+
+    def contigent_collide( self, other ):
+        """Compose `collision_check` and `collide`"""
+        pass
+
+class Projectile(MassiveObject):
+    pass
+
+class Missile:
+    pass
 
 
 class Module( MassiveObject ):
@@ -123,11 +175,19 @@ class Module( MassiveObject ):
     def __init__(self):
         self.is_powered = False
         self.is_commanded = False #commanded modules follow commands from captain
+        self.destroyed = False
+        self.power = 0 #power consumption when on. negatives are power drains, positives are power producers
         
 
 class World:
     def __init__(self):
-        self.physical_objects = {}
+        self.physical_objects = []
+        self.name_map = {}
+
+    def detect_collisions( self ):
+        for index1, obj1 in enumerate(self.physical_objects):
+            for index2 in range(index1+1, len(self.physical_objects) ):
+                obj1.contigent_collide( self.physical_objects[other] )
 
     def tick( self,  stepsize = global_constants.base_timestep ):
         pass
