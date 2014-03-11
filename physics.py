@@ -2,13 +2,27 @@
 
 class GlobalConstants:
     """Class containing global constants like the speed of light"""
-    speed_of_light = 3*10**8
+    speed_of_light = float('inf') #crazy newton like infinite c
     tick_lengths = 10 #10 second ticks
     dimensions = 2
     norm = 1
+    phi = (2236,1000) #numerator, denominator tuple for phi for integer gss
 
 global global_constants
 global_constants = GlobalConstants()
+
+def golden_section_search( function, lower_bound, upper_bound ):
+    phi = global_constants.phi
+
+    ff=function
+    x1 = lower_bound
+    x3 = upper_bound
+    
+    a = 
+
+
+
+
 
 class Vector:
     """Vectors"""
