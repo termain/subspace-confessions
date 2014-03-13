@@ -1,128 +1,31 @@
 """Subspace physics will be 2-D, L1 norm"""
+import numerics
 
 class GlobalConstants:
     """Class containing global constants like the speed of light"""
     speed_of_light = float('inf') #crazy newton like infinite c
-    tick_lengths = 10 #10 second ticks
+    ticks_per_second = 1000
+    seconds_per_turn = 1
     dimensions = 2
     norm = 1
-    phi = (1618034,1000000) #numerator, denominator tuple for phi for integer gss
 
 global global_constants
 global_constants = GlobalConstants()
 
-"""
-def golden_section_search( function, lower_bound, upper_bound, tol=2 ):
-    phi = global_constants.phi
-    c0 = phi[0]-phi[1] #numerator of phi minus one over phi's denominator
-    ff=function
 
-    x_lb = lower_bound
-    x_ub = upper_bound
-    f_lb = ff(x_lb)
-    f_ub = ff(x_ub)
-
-    x_lt = ((x_ub-x_lb)*c0)//phi[1]+x_lb#lower test point
-    f_lt = ff(x_lt)
-    if f_lt > max( f_lb, f_ub ):
-        if f_lb > f_ub:
-            return x_ub
-        else:
-            return x_lb
-
-
-    while x3-x1>=tol:
-        delta = x3-x1
-    
-        aa = (delta*c0)//phi[1]
-        bb = (x2*phi[0])//phi[1]
-
-        x2 = aa+x1
-        x4 = x3-bb
-
-        f2 = ff(aa)
-        f4 = ff(bb)
-
-        if f4>
-"""
-
-        
-
-
-
-
-
-class Vector:
-    """Vectors"""
-    def __init__(self, *values ):
-        self.values = tuple(values)
-
-    def __getitem__(self, index ):
-        return self.values[index]
-
-    def __len__( self ):
-        return len( self.values ) 
-
-    def scale( self, scalar ):
-        return Vector( *[value*scalar for value in self.values] )
-
-    def divide( self, scalar ):
-        return Vector( *[value//scalar for value in self.values] )
-
-    def add( self, other ):
-        return Vector( *[ self[index]+other[index] for index in range(len(self)) ] )
-
-    def subtract( self, other ):
-        return Vector( *[ self[index]-other[index] for index in range(len(self)) ] )
-
-    def __abs__(self):
-        return Vector( *[abs(value) for value in self.values] )
-
-    def norm( self ):
-        """L1 length"""
-        return sum( self )
-
-    def distance( self, other ):
-        return self.subtract(other).norm()
-
-    def __repr__(self):
-        return "Vector({values})".format(values=','.join([str(value) for value in self.values]))
-
-    def __add__(self, other ):
-        return self.add(other)
-
-    def __sub__(self, other ):
-        return self.subtract(other)
-
-def new_vector( length, value = 0 ):
-    """Construct a vector of length `length` with the same value in each element"""
-    values = [value]*length
-    return Vector( *values )
-
-def isqrt(nn):
-    """Integer square root ripped shamelessly from StackOverflow:
-http://stackoverflow.com/questions/15390807/integer-square-root-in-python
-and
-http://programmingpraxis.com/2012/06/01/square-roots/"""
-    xx = nn
-    yy = (xx + nn // xx) // 2
-    while yy < xx:
-        xx = yy
-        yy = (xx + nn // xx) // 2
-    return xx
 
 class MassiveObject:
     """The base class of massive objects"""
     def __init__(self):
-        self.mass = 1
-        self.size = 1
-        self.heat_capacity = 1
-        self.toughness = 1
-        self.max_temp = 1
-        self.heat = 1
-        self.position = new_vector( global_constants.dimensions )
-        self.velocity = new_vector( global_constants.dimensions )
-        self.acceleration = new_vector( global_constants.dimensions )
+        self.mass = 1 #fake kg
+        self.size = 1 #fake m
+        self.heat_capacity = 1 #fake J
+        self.toughness = 1 #fake J
+        self.max_temp = 1 #fake K
+        self.heat = 1 #fake J
+        self.position = new_vector( global_constants.dimensions ) #fake m
+        self.velocity = new_vector( global_constants.dimensions ) #fake m/tick
+        self.acceleration = new_vector( global_constants.dimensions ) #fake m/tick**2
 
 
     def sum_forces( self, *list_of_force_vectors):
@@ -134,6 +37,13 @@ class MassiveObject:
     def current_distance( self, other ):
         """Distance at current moment in time"""
         return (self.distance-other.distance).norm()
+
+    def tick( self, time_step = global_constants.tick_length ):
+        """Advance the object one time step. Happens before collisions are checked for"""
+        state_vector = self.position.concatenate( self.velocity )
+        state_derivative_vector = self.velocity.concatenate( self.acceleration )
+
+        
 
     def minimum_distance_across_previous_tick( self, other ):
         """Minimum distance between self and other across the previous tick,
@@ -163,20 +73,7 @@ class MassiveObject:
         """Compose `collision_check` and `collide`"""
         pass
 
-class Projectile(MassiveObject):
-    pass
 
-class Missile:
-    pass
-
-
-class Module( MassiveObject ):
-    """Modules make up ships"""
-    def __init__(self):
-        self.is_powered = False
-        self.is_commanded = False #commanded modules follow commands from captain
-        self.destroyed = False
-        self.power = 0 #power consumption when on. negatives are power drains, positives are power producers
         
 
 class World:
