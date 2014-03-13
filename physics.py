@@ -73,6 +73,9 @@ class MassiveObject:
         """Compose `collision_check` and `collide`"""
         pass
 
+    def map_type(self):
+        return "unknown"
+
 
         
 
@@ -88,6 +91,7 @@ class World:
 
     def tick( self,  stepsize = global_constants.base_timestep ):
         pass
+
 
 def _test_suite():
     Vector()
