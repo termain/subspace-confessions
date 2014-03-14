@@ -4,7 +4,7 @@ import numerics
 class GlobalConstants:
     """Class containing global constants like the speed of light"""
     speed_of_light = float('inf') #crazy newton like infinite c
-    ticks_per_second = 1000
+    ticks_per_second = 10
     seconds_per_turn = 1
     dimensions = 2
     norm = 1
@@ -25,23 +25,22 @@ class MassiveObject:
         self.heat = 1 #fake J
         self.position = new_vector( global_constants.dimensions ) #fake m
         self.velocity = new_vector( global_constants.dimensions ) #fake m/tick
-        self.acceleration = new_vector( global_constants.dimensions ) #fake m/tick**2
+        self.impulse = new_vector( global_constants.dimensions )
 
-
-    def sum_forces( self, *list_of_force_vectors):
-        pass
-
-    def set_acceleration( self, force_vector ):
-        self.acceleration = force_vector.divide( self.mass  )
+        self.integrator = EulerIntegrator()
 
     def current_distance( self, other ):
         """Distance at current moment in time"""
         return (self.distance-other.distance).norm()
 
     def tick( self, time_step = global_constants.tick_length ):
-        """Advance the object one time step. Happens before collisions are checked for"""
-        state_vector = self.position.concatenate( self.velocity )
-        state_derivative_vector = self.velocity.concatenate( self.acceleration )
+        """Advance the object one time step. Happens before collisions are checked for.
+
+        After collisions are found, their are added to object (particularly
+        impulse"""
+
+        self.velocity = self.velocity+self.impulse/self.mass
+        self.integrator.integrate_1st_order_system( self.position, self.velocity )
 
         
 

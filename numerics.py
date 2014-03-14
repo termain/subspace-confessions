@@ -59,6 +59,10 @@ class Vector:
     def slice( self, low_index, high ):
         return Vector( self[low_index:high_index])
 
+    def zero( self ):
+        for index, element in self.values:
+            self.values[index] = 0
+
 def new_vector( length, value = 0 ):
     """Construct a vector of length `length` with the same value in each element"""
     values = [value]*length
